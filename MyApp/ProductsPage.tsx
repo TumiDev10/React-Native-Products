@@ -74,10 +74,10 @@ const MyComponent: React.FC = () => {
                         <View key={product.id} style={styles.productItem}>
                             <View style={styles.imageContainer}>
                                 <Image style={styles.thumbnail} source={{ uri: product.thumbnail }} />
-                                <Text style={styles.price}>Price: R{product.price * 19}</Text>
+                                <Text style={styles.price1}>Was: R{product.price * 19}</Text>
+                                <Text style={styles.price}>Now: R{product.price * 19 - product.price}</Text>
                             </View>
                             <Text style={styles.productName}>{product.name}</Text>
-                            
                         </View>
                     ))}
                 </Animated.ScrollView>
@@ -141,6 +141,11 @@ const styles = StyleSheet.create({
     price: {
         fontSize: 14,
        color: 'green',
+    },
+
+    price1: {
+        fontSize: 14,
+        color: 'red',
     },
 });
 

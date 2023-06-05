@@ -34,7 +34,7 @@ const AboutScreen: React.FC = () => {
             <View style={styles.featuresContainer}>
                 <Text style={styles.sectionTitle}>Our Features</Text>
                 <Text>
-                    <Text style={styles.featureItem}>- Free shipping on all orders over $50</Text>
+                    <Text style={styles.featureItem}>- Free shipping on all orders over R100</Text>
                     {"\n"}
                     <Text style={styles.featureItem}>- 30-day money-back guarantee</Text>
                     {"\n"}
