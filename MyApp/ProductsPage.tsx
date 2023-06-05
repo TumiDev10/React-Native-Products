@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { View, Text, StyleSheet, Image, ScrollView, Animated } from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView, Animated, TextInput, TouchableOpacity } from 'react-native';
 
 interface CurrencyRates {
     [key: string]: number;
@@ -20,6 +20,7 @@ const MyComponent: React.FC = () => {
     const [products, setProducts] = useState<Product[]>([]);
     const [currencyRates, setCurrencyRates] = useState<CurrencyRates>({});
     const [error, setError] = useState<any>(null);
+    const [maxPrice, setMaxPrice] = useState<number | undefined>(undefined); // State for maximum price
 
     const scrollY = new Animated.Value(0);
 
@@ -56,6 +57,23 @@ const MyComponent: React.FC = () => {
         return price - (price * discount) / 100;
     };
 
+    const applyPriceFilter = () => {
+        if (typeof maxPrice === 'undefined') {
+            // If maxPrice is undefined, reset the filter and fetch all products again
+            resetFilter();
+        } else {
+            // Filter the products based on the maximum price
+            const filteredProducts = products.filter(product => product.price * 19 <= maxPrice);
+            setProducts(filteredProducts);
+        }
+    };
+
+
+    const resetFilter = () => {
+        // Reset the maximum price and fetch all products again
+        setMaxPrice(undefined);
+        fetchProductData();
+    };
 
     if (error) {
         return <Text>Error: {error.message}</Text>;
@@ -64,7 +82,23 @@ const MyComponent: React.FC = () => {
     } else {
         return (
             <View style={styles.container}>
-                <Text style={styles.heading}></Text>
+                <View style={styles.filterContainer}>
+                    <Text style={styles.heading}>Filter by Price:</Text>
+                    <TextInput
+                        style={styles.input}
+                        keyboardType="numeric"
+                        placeholder="Max Price"
+                        value={maxPrice ? maxPrice.toString() : ''}
+                        onChangeText={text => setMaxPrice(Number(text))}
+                    />
+                    <TouchableOpacity style={styles.filterButton} onPress={applyPriceFilter}>
+                        <Text>Apply Filter</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.resetButton} onPress={resetFilter}>
+                        <Text>Reset Filter</Text>
+                    </TouchableOpacity>
+                </View>
                 <Animated.ScrollView
                     style={styles.scrollContainer}
                     onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], { useNativeDriver: true })}
@@ -91,20 +125,34 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 16,
     },
-
-    discountText: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 8,
+    filterContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 16,
     },
-    discountContainer: {
-        marginBottom: 8,
+    input: {
+        flex: 1,
+        borderWidth: 1,
+        borderColor: 'gray',
+        borderRadius: 4,
+        paddingHorizontal: 8,
+        marginRight: 8,
     },
-
+    filterButton: {
+        padding: 8,
+        backgroundColor: 'lightblue',
+        borderRadius: 4,
+        marginRight: 8,
+    },
+    resetButton: {
+        padding: 8,
+        backgroundColor: 'lightgray',
+        borderRadius: 4,
+    },
     heading: {
         fontSize: 18,
         fontWeight: 'bold',
-        marginBottom: 8,
+        marginRight: 8,
     },
     scrollContainer: {
         flex: 1,
@@ -137,12 +185,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginTop: 8,
     },
-  
     price: {
         fontSize: 14,
-       color: 'green',
+        color: 'green',
     },
-
     price1: {
         fontSize: 14,
         color: 'red',

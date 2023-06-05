@@ -9,7 +9,7 @@ const AboutScreen: React.FC = () => {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.title}>About Us - My Store</Text>
+                <Text style={styles.title}>About Us - Zuse </Text>
             </View>
             <ScrollView contentContainerStyle={styles.scrollContentContainer}>
                 <View style={styles.contentContainer}>
