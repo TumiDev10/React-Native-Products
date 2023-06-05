@@ -2,14 +2,16 @@ import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
+
 const LogoutPage: React.FC = () => {
     const navigation = useNavigation();
 
     const handleLogout = () => {
         // Perform logout logic here
         // For example, clearing user session or token
-       // navigation.navigate('LoginRegistrationPage');
 
+        navigation.navigate('LoginRegistrationPage');
+  
     };
 
     return (
@@ -39,3 +41,4 @@ const styles = StyleSheet.create({
 });
 
 export default LogoutPage;
+

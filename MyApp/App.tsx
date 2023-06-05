@@ -24,25 +24,35 @@ const App: React.FC = () => {
         <NavigationContainer>
             <Stack.Navigator>
                 {isLoggedIn ? (
-                    <Stack.Screen
-                        name="Zuse Technologies"
-                        component={HomePage}
-                        options={{
-                            title: 'Zuse Technologies',
-                            headerTitleAlign: 'center',
-                            
-                        }} />
-
-
+                    <>
+                        <Stack.Screen
+                            name="Zuse Technologies"
+                            component={HomePage}
+                            options={{
+                                title: 'Zuse Technologies',
+                                headerTitleAlign: 'center',
+                            }}
+                        />
+                        <Stack.Screen
+                            name="Logout"
+                            component={LogoutPage}
+                            options={{
+                                title: 'Logout',
+                                headerTitleAlign: 'center',
+                            }}
+                            // Pass the handleLogout function as a prop
+                            initialParams={{ handleLogout }}
+                        />
+                    </>
                 ) : (
                     <Stack.Screen
                         name="LoginRegistrationPage"
                         options={{ headerShown: false }}
                     >
+                        {/* Pass the handleLogin function as a prop */}
                         {() => <LoginRegistrationPage onLogin={handleLogin} />}
                     </Stack.Screen>
                 )}
-                
             </Stack.Navigator>
         </NavigationContainer>
     );

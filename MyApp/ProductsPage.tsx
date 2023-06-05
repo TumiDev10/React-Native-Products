@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { View, Text, StyleSheet, Image, ScrollView, Animated, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, FlatList, Animated, TextInput, TouchableOpacity } from 'react-native';
 
 interface CurrencyRates {
     [key: string]: number;
@@ -15,7 +15,7 @@ interface Product {
     discount?: number;
 }
 
-const MyComponent: React.FC = () => {
+const Products: React.FC = () => {
     const [isLoaded, setIsLoaded] = useState(false);
     const [products, setProducts] = useState<Product[]>([]);
     const [currencyRates, setCurrencyRates] = useState<CurrencyRates>({});
@@ -61,16 +61,13 @@ const MyComponent: React.FC = () => {
         if (typeof maxPrice === 'undefined') {
             // If maxPrice is undefined, reset the filter and fetch all products again
             resetFilter();
+            console.log("No results");
         } else {
             // Filter the products based on the maximum price
             const filteredProducts = products.filter(product => product.price * 19 <= maxPrice);
             setProducts(filteredProducts);
-            //setTimeout(resetFilter, 2000);
-           // console.log(maxPrice);
         }
     };
-
-    
 
 
     const resetFilter = () => {
@@ -103,22 +100,20 @@ const MyComponent: React.FC = () => {
                         <Text>Reset Filter</Text>
                     </TouchableOpacity>
                 </View>
-                <Animated.ScrollView
-                    style={styles.scrollContainer}
-                    onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], { useNativeDriver: true })}
-                    scrollEventThrottle={16}
-                >
-                    {products.map((product: Product) => (
-                        <View key={product.id} style={styles.productItem}>
+                <FlatList
+                    data={products}
+                    renderItem={({ item }) => (
+                        <View key={item.id} style={styles.productItem}>
                             <View style={styles.imageContainer}>
-                                <Image style={styles.thumbnail} source={{ uri: product.thumbnail }} />
-                                <Text style={styles.price1}>Was: R{product.price * 19}</Text>
-                                <Text style={styles.price}>Now: R{product.price * 19 - product.price}</Text>
+                                <Image style={styles.thumbnail} source={{ uri: item.thumbnail }} />
+                                <Text style={styles.price1}>Was: R{item.price * 19}</Text>
+                                <Text style={styles.price}>Now: R{item.price * 19 - item.price}</Text>
                             </View>
-                            <Text style={styles.productName}>{product.name}</Text>
+                            <Text style={styles.productName}>{item.name}</Text>
                         </View>
-                    ))}
-                </Animated.ScrollView>
+                    )}
+                    keyExtractor={(item) => item.id}
+                />
             </View>
         );
     }
@@ -199,4 +194,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default MyComponent;
+export default Products;
