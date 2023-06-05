@@ -1,9 +1,11 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import ProductsPage from './ProductsPage.tsx';
 
 
 
 const AboutScreen: React.FC = () => {
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -25,7 +27,7 @@ const AboutScreen: React.FC = () => {
                         <Text style={styles.paragraph}>
                             We are a team of passionate and dedicated professionals who love what we do. Our diverse backgrounds and experiences enable us to bring unique perspectives to our work, and we are committed to creating a positive and inclusive workplace culture where everyone can thrive.
                         </Text>
-                        <TouchableOpacity style={styles.ctaButton} onPress={() => { }}>
+                        <TouchableOpacity style={styles.ctaButton} onPress={() => {ProductsPage}}>
                             <Text style={styles.ctaButtonText}>Explore Our Products</Text>
                         </TouchableOpacity>
                     </View>

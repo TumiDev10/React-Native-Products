@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
 
     productItem: {
         alignItems: 'center',
-        marginBottom: -150,
+        marginBottom: 50,
         marginTop: 20,
     },
 

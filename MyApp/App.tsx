@@ -32,6 +32,7 @@ const App: React.FC = () => {
                             headerTitleAlign: 'center',
                         }} />
 
+
                 ) : (
                     <Stack.Screen
                         name="LoginRegistrationPage"
