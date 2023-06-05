@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet, Text, Alert } from 'react-native';
+import { View, TextInput, Button, StyleSheet, Text, Alert, Image } from 'react-native';
+import zuse from './zuse.png';
+
 
 interface LoginRegistrationPageProps {
     onLogin: (email: string, password: string) => void;
@@ -54,10 +56,16 @@ const LoginRegistrationPage: React.FC<LoginRegistrationPageProps> = ({ onLogin }
     };
 
     return (
-       <View style={styles.container}>
+        
+        <View style={styles.container}>
+           
             <Text style={styles.heading}>
                 {isLogin ? 'Login' : 'Register'}</Text>
-      
+
+            <View style={styles.productItem}>
+                <Image source={zuse} style={styles.productImage} />
+                <Text>Zuse Technologies</Text>
+            </View>
         <View style={styles.container}>
             <TextInput
                 style={styles.input}
@@ -117,6 +125,17 @@ const styles = StyleSheet.create({
         padding: 12,
         borderWidth: 1,
         borderColor: '#ccc',
+    },
+
+    productItem: {
+        alignItems: 'center',
+        marginBottom: -150,
+        marginTop: 20,
+    },
+
+    productImage: {
+        width: 200,
+        height: 200,
     },
 });
 
