@@ -8,7 +8,7 @@ const LogoutPage: React.FC = () => {
     const handleLogout = () => {
         // Perform logout logic here
         // For example, clearing user session or token
-        navigation.navigate('LoginRegistrationPage');
+       // navigation.navigate('LoginRegistrationPage');
 
     };
 

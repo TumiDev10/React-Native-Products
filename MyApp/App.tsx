@@ -30,6 +30,7 @@ const App: React.FC = () => {
                         options={{
                             title: 'Zuse Technologies',
                             headerTitleAlign: 'center',
+                            
                         }} />
 
 

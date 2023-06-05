@@ -65,8 +65,12 @@ const MyComponent: React.FC = () => {
             // Filter the products based on the maximum price
             const filteredProducts = products.filter(product => product.price * 19 <= maxPrice);
             setProducts(filteredProducts);
+            //setTimeout(resetFilter, 2000);
+           // console.log(maxPrice);
         }
     };
+
+    
 
 
     const resetFilter = () => {
