@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { View, Text, StyleSheet, Image, FlatList, Animated, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, FlatList, TextInput, TouchableOpacity } from 'react-native';
 
 interface CurrencyRates {
     [key: string]: number;
@@ -8,11 +8,14 @@ interface CurrencyRates {
 
 interface Product {
     id: string;
-    name: string;
+    brand: string;
     price: number;
     currency: string;
     thumbnail: string;
-    discount?: number;
+    discountPercentage?: number;
+    rating: number;
+    title: string;
+    description: string;
 }
 
 const Products: React.FC = () => {
@@ -21,8 +24,7 @@ const Products: React.FC = () => {
     const [currencyRates, setCurrencyRates] = useState<CurrencyRates>({});
     const [error, setError] = useState<any>(null);
     const [maxPrice, setMaxPrice] = useState<number | undefined>(undefined); // State for maximum price
-
-    const scrollY = new Animated.Value(0);
+    const [searchQuery, setSearchQuery] = useState<string>('');
 
     useEffect(() => {
         fetchProductData();
@@ -32,11 +34,11 @@ const Products: React.FC = () => {
     const fetchProductData = () => {
         axios
             .get('https://dummyjson.com/product')
-            .then(response => {
+            .then((response) => {
                 setIsLoaded(true);
                 setProducts(response.data.products);
             })
-            .catch(error => {
+            .catch((error) => {
                 setIsLoaded(true);
                 setError(error);
             });
@@ -45,34 +47,38 @@ const Products: React.FC = () => {
     const fetchCurrencyData = () => {
         axios
             .get('https://api.exchangerate.host/latest?base=USD')
-            .then(response => {
+            .then((response) => {
                 setCurrencyRates(response.data.rates);
             })
-            .catch(error => {
+            .catch((error) => {
                 console.error(error);
             });
     };
 
-    const calculateDiscountedPrice = (price: number, discount: number) => {
-        return price - (price * discount) / 100;
+    const calculateDiscountedPrice = (price: number, discountPercentage: number) => {
+        return price - (price * discountPercentage) / 100;
     };
 
     const applyPriceFilter = () => {
         if (typeof maxPrice === 'undefined') {
             // If maxPrice is undefined, reset the filter and fetch all products again
             resetFilter();
-            console.log("No results");
+            console.log('No results');
         } else {
-            // Filter the products based on the maximum price
-            const filteredProducts = products.filter(product => product.price * 19 <= maxPrice);
+            // Filter the products based on the maximum price and search query
+            const filteredProducts = products.filter(
+                (product) =>
+                    product.price * 19 <= maxPrice &&
+                    product.brand.toLowerCase().includes(searchQuery.toLowerCase())
+            );
             setProducts(filteredProducts);
         }
     };
 
-
     const resetFilter = () => {
-        // Reset the maximum price and fetch all products again
+        // Reset the maximum price, search query, and fetch all products again
         setMaxPrice(undefined);
+        setSearchQuery('');
         fetchProductData();
     };
 
@@ -83,6 +89,17 @@ const Products: React.FC = () => {
     } else {
         return (
             <View style={styles.container}>
+                <View style={styles.searchContainer}>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Search by Brand"
+                        value={searchQuery}
+                        onChangeText={(text) => setSearchQuery(text)}
+                    />
+                    <TouchableOpacity style={styles.clearButton} onPress={() => setSearchQuery('')}>
+                        <Text>Clear</Text>
+                    </TouchableOpacity>
+                </View>
                 <View style={styles.filterContainer}>
                     <Text style={styles.heading}>Filter by Price:</Text>
                     <TextInput
@@ -90,12 +107,11 @@ const Products: React.FC = () => {
                         keyboardType="numeric"
                         placeholder="Max Price"
                         value={maxPrice ? maxPrice.toString() : ''}
-                        onChangeText={text => setMaxPrice(Number(text))}
+                        onChangeText={(text) => setMaxPrice(Number(text))}
                     />
                     <TouchableOpacity style={styles.filterButton} onPress={applyPriceFilter}>
                         <Text>Apply Filter</Text>
                     </TouchableOpacity>
-
                     <TouchableOpacity style={styles.resetButton} onPress={resetFilter}>
                         <Text>Reset Filter</Text>
                     </TouchableOpacity>
@@ -105,11 +121,15 @@ const Products: React.FC = () => {
                     renderItem={({ item }) => (
                         <View key={item.id} style={styles.productItem}>
                             <View style={styles.imageContainer}>
+                                <Text style={styles.productName}>{item.title.includes(item.brand) ? item.title : `${item.brand} ${item.title}`}</Text>
                                 <Image style={styles.thumbnail} source={{ uri: item.thumbnail }} />
-                                <Text style={styles.price1}>Was: R{item.price * 19}</Text>
-                                <Text style={styles.price}>Now: R{item.price * 19 - item.price}</Text>
+                                <Text style={styles.productName}>Description: {item.description}</Text>
+                                <Text style={styles.productRate}>Rating: {item.rating}</Text>
+                                <View style={styles.priceContainer}>
+                                    <Text style={styles.price1}>Was: R{item.price * 19}</Text>
+                                    <Text style={styles.price}>Now: R{item.price * 19 - item.price}</Text>
+                                </View>
                             </View>
-                            <Text style={styles.productName}>{item.name}</Text>
                         </View>
                     )}
                     keyExtractor={(item) => item.id}
@@ -124,7 +144,7 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 16,
     },
-    filterContainer: {
+    searchContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         marginBottom: 16,
@@ -136,6 +156,16 @@ const styles = StyleSheet.create({
         borderRadius: 4,
         paddingHorizontal: 8,
         marginRight: 8,
+    },
+    clearButton: {
+        padding: 8,
+        backgroundColor: 'lightgray',
+        borderRadius: 4,
+    },
+    filterContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 16,
     },
     filterButton: {
         padding: 8,
@@ -153,31 +183,38 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginRight: 8,
     },
-    scrollContainer: {
-        flex: 1,
-    },
+
     productItem: {
-        marginBottom: 12,
+        marginBottom: 17,
+        
     },
     imageContainer: {
         width: '100%',
-        height: 200,
+        height: 600,
         borderWidth: 1,
         borderColor: 'gray',
         borderRadius: 8,
         overflow: 'hidden',
         alignItems: 'center',
         justifyContent: 'center',
-        marginBottom: 8,
+    
     },
     thumbnail: {
         width: '80%',
-        height: '80%',
+        height: '60%',
         resizeMode: 'contain',
+       
     },
     productName: {
         fontSize: 16,
         fontWeight: 'bold',
+    },
+    productRate: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginRight: 250,
+        marginTop: 20,
+        color: 'black',
     },
     priceContainer: {
         flexDirection: 'row',
@@ -187,10 +224,16 @@ const styles = StyleSheet.create({
     price: {
         fontSize: 14,
         color: 'green',
+        marginLeft: 17,
+        fontWeight: 'bold',
     },
     price1: {
         fontSize: 14,
         color: 'red',
+        fontWeight: 'bold',
+        marginLeft: -162,
+        textDecorationLine: 'line-through',
+        textDecorationStyle: 'solid',
     },
 });
 

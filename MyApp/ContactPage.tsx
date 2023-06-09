@@ -7,7 +7,7 @@ interface ContactUsState {
     message: string;
 }
 
-class ContactUsPage extends React.Component<{}, ContactUsState> {
+class ContactPage extends React.Component<{}, ContactUsState> {
     constructor(props: {}) {
         super(props);
         this.state = {
@@ -32,6 +32,7 @@ class ContactUsPage extends React.Component<{}, ContactUsState> {
     handleSubmit = () => {
         const { name, email, message } = this.state;
         Alert.alert('Form Submitted', 'Thank you for contacting us!');
+        setTimeout(this.handleSubmit, 2000);
     };
 
     render() {
@@ -88,4 +89,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default ContactUsPage;
+export default ContactPage;

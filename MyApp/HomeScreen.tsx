@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
-import product1 from './product1.jpeg';
-import product2 from './product2.jpg';
+import { View, Text, Image, StyleSheet, ScrollView } from 'react-native';
+
 
 
 
 const HomeScreen: React.FC = () => {
     return (
+        <ScrollView>
         <View style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.heading}>Welcome to My Store</Text>
@@ -14,18 +14,20 @@ const HomeScreen: React.FC = () => {
             </View>
             <View style={styles.productList}>
                 <View style={styles.productItem}>
-                    <Image source={product1} style={styles.productImage} />
+                    <Image source={require('./product1.jpeg')} />
                     <Text style={styles.productTitle}>iPhone</Text>
                     <Text>$548.00</Text>
                 </View>
+
                 <View style={styles.productItem}>
-                    <Image source={product2} style={styles.productImage} />
-                    <Text style={styles.productTitle}>MacBook Pro</Text>
-                    <Text>$1749.00</Text>
+                    <Image source={require('./product3.jpeg')} />
+                        <Text style={styles.productTitle}>Perfume Oil</Text>
+                    <Text>$29.00</Text>
                 </View>
                 
             </View>
-        </View>
+            </View>
+            </ScrollView>
     );
 };
 
